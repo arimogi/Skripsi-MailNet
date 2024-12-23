@@ -45,10 +45,12 @@ class Model(nn.Module):
         self.config = configs
 
         # Embedding
-        self.enc_embedding = DataEmbedding(self.name, configs.enc_in, configs.d_model, configs.embed, configs.freq,
+        # __init__(self, c_in, c_out, d_model, kernel_size, dropout=0.2, n_windows=5):
+        self.enc_embedding = DataEmbedding(self.name, configs.enc_in, configs.c_out, configs.d_model, configs.embed, configs.freq,
                                            configs.dropout)
+        
         # Decoder Digunakan untuk mengaggregasi informasi dan memperbaiki prediksi dari simpel inisialisasi
-        self.dec_embedding = DataEmbedding(self.name, configs.dec_in, configs.d_model, configs.embed, configs.freq,
+        self.dec_embedding = DataEmbedding(self.name, configs.dec_in, configs.c_out, configs.d_model, configs.embed, configs.freq,
                                            configs.dropout) 
         # Encoder digunakan untuk mengekstrak informasi pada observasi sebelumnya
         self.encoder = Encoder(
