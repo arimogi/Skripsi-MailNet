@@ -16,7 +16,8 @@ py -u run.py \
   --des 'Exp_h256_l2' \
   --p_hidden_dims 128 128 \
   --p_hidden_layers 2 \
-  --itr 1 &
+  --kernel_size 2 \
+  --itr 1
 
 # py -u run.py \
 #   --is_training 0 \
