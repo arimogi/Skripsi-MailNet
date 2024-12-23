@@ -8,18 +8,29 @@ an embedding…stores categorical data in a lower-dimensional vector than an ind
 """
 
 class PositionalEmbedding(nn.Module):
-    def __init__(self, model_name, d_model, max_len=5000):
+    def __init__(self, model_name, d_model, max_len=5000):        
         super(PositionalEmbedding, self).__init__()
+        
+        d_model = 28  # Embedding dimension
+        
         self.model_name = model_name
         # Compute the positional encodings once in log space.
-        pe = torch.zeros(max_len, d_model).float()
+        pe = torch.zeros(max_len, d_model) # .float()
         pe.require_grad = False
 
-        position = torch.arange(0, max_len).float().unsqueeze(1)
-        div_term = (torch.arange(0, d_model, 2).float() * -(math.log(10000.0) / d_model)).exp()
+        #position = torch.arange(0, max_len).float().unsqueeze(1)
+        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
+
+        #div_term = (torch.arange(0, d_model, 2).float() * -(math.log(10000.0) / d_model)).exp()
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-torch.log(torch.tensor(10000.0)) / d_model))
+        
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term)
+        
+        #pe[:, 0::2] = torch.sin(position * div_term)
+        #pe[:, 1::2] = torch.cos(position * div_term[:, :pe[:, 1::2].shape[1]])  # Ensure shapes match
 
+        # Add batch dimension (if needed)        
         pe = pe.unsqueeze(0)
         self.register_buffer('pe', pe)
 
@@ -50,6 +61,8 @@ class TokenTCNEmbedding(nn.Module):
         # TCN
         self.dropout = nn.Dropout(dropout)
         layers = []
+        print("Kernel: " + str(kernel_size))
+        # n_windows = int(n_windows)
         self.num_levels = math.ceil(math.log2((n_windows - 1) * (2 - 1) /kernel_size))
         self.leakyrelu = nn.LeakyReLU(True)
         for i in range(self.num_levels-1):
