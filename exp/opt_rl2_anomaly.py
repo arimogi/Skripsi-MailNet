@@ -241,8 +241,8 @@ class OPT_RL_Anomaly():
         # Set up the training environment on all the dataset
         env_off=TrainEnvOffline_dist_conf(list_pred_sc=list_pred_models, list_thresholds=list_thresholds, list_gtruth=test_labels)
         # Train the model on all the dataset  
-        model = DQN('MlpPolicy', env_off, verbose=1, tensorboard_log=path)
-        model.learn(total_timesteps=len(list_pred_models[0]),progress_bar=True) 
+        model = DQN('MlpPolicy', env_off, verbose=1, tensorboard_log=path)        
+        model.learn(total_timesteps=len(list_pred_models[0]),progress_bar=True, tb_log_name="exp_learn_1") 
         acc,prec, rec, f1, _, list_preds, reward =eval_model(model, env_off)  #masuk ke step di env
 
         print(f"precision: {prec}, recall: {rec}, F1-score: {f1} reward: {reward}")
