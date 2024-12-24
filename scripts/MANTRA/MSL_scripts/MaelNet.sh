@@ -15,4 +15,4 @@
   --gpu 0 \
   --p_hidden_dims 128 128 \
   --p_hidden_layers 2 \
-  --itr 1 &
+  --itr 1
