@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import math
 from torch.nn.utils import weight_norm
 
@@ -182,7 +183,18 @@ class DataEmbedding(nn.Module):
         if x_mark is None:
             ve = self.value_embedding(x)
             pe = self.position_embedding(x)
-            x =  ve + pe 
+            print("\n")
+            print(f"Shape of ve: {ve.shape}")
+            print(f"Shape of pe: {pe.shape}")
+            print("\n")
+            pe_resized = F.interpolate(pe, size=512, mode='linear', align_corners=True)
+            pe_resized.expand(32, -1, -1)
+            # pe = pe.expand_as(ve)
+            #pe = pe.unsqueeze(-1)
+            #pe = pe.repeat(1, 1, 512)
+            #linear = nn.Linear(pe.size(-1), ve.size(-1))
+            #pe = linear(pe)
+            x =  ve + pe_resized
         else:
             ve = self.value_embedding(x)
             pe = self.position_embedding(x)
